@@ -43,7 +43,6 @@ class DockerBackend(base.BaseBackend):
         '''
         command_items = ["docker exec"]
         args = [self.name, command]
-
         user_flag = "-u %s"
 
         if self.user is not None:
@@ -51,8 +50,5 @@ class DockerBackend(base.BaseBackend):
             args.insert(0, self.user)
 
         command_items.extend(["%s", console, "-c", "%s"])
-
-        # join the command into one string
         docker_command = " ".join(command_items)
-        print(docker_command, args)
         return (docker_command, args)
