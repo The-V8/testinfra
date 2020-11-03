@@ -22,62 +22,37 @@ class DockerBackend(base.BaseBackend):
 
     def run(self, command, *args, **kwargs):
         '''
-        Builds the command for docker to execute and
-        passes it on to the run_local function in the
-        backend/base.py
-
-        The optional parameter "terminal" can be passed
-        to specify the terminal which runs the command.
-
-        Usage:
-        host.run("my command")
-        host.run("my command", terminal='powershell)
-        host.run("my command", terminal='/bin/bash)
+        Builds the command for docker to execution
         '''
         cmd = self.get_command(command, *args)
 
-        # get the terminal specification - default: "/bin/sh"
-        terminal_key = "terminal"
-        terminal = (
-            "/bin/sh" if terminal_key not in kwargs
-            else kwargs[terminal_key])
-        # get the docker command
-        docker_command, args = self.__docker_command(terminal, cmd)
+        # Need to set console here since we re not dealing with the
+        # super class run() signature
+        console = "/bin/sh" if 'console' not in kwargs else kwargs['console']
 
-        # run the built docker command
+        docker_command, args = self.__docker_command(console, cmd)
         out = self.run_local(docker_command, *args)
+
         out.command = self.encode(cmd)
         return out
 
-    def __docker_command(self, terminal, command):
+    def __docker_command(self, console, command):
         '''
-        Builds the command to be run by the specified terminal.
-        This method does not execute the command
-
-        terminal (str): The terminal to run the command in
-        command (str): The command to execute
-
-        Usage:
-            __docker_command('/bin/sh', cmd) will return the docker
-            command with placeholders and the corresponding args.
+        Builds the command to be run by the specified console.
+        This method does not execute the command.
         '''
-        command_items = []
-        args = []
-        if self.user is None:
-            command_items = [
-                "docker exec",
-                "%s",
-                terminal, "-c",
-                "%s"]
-            args = [self.name, command]
-        else:
-            command_items = [
-                "docker exec",
-                "-u", "%s", "%s",
-                terminal, "-c",
-                "%s"]
-            args = [self.user, self.name, command]
+        command_items = ["docker exec"]
+        args = [self.name, command]
+
+        user_flag = "-u %s"
+
+        if self.user is not None:
+            command_items.append(user_flag)
+            args.insert(0, self.user)
+
+        command_items.extend(["%s", console, "-c", "%s"])
 
         # join the command into one string
         docker_command = " ".join(command_items)
+        print(docker_command, args)
         return (docker_command, args)
