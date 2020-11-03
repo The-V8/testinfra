@@ -21,13 +21,63 @@ class DockerBackend(base.BaseBackend):
         super().__init__(self.name, *args, **kwargs)
 
     def run(self, command, *args, **kwargs):
+        '''
+        Builds the command for docker to execute and
+        passes it on to the run_local function in the
+        backend/base.py
+
+        The optional parameter "terminal" can be passed
+        to specify the terminal which runs the command.
+
+        Usage:
+        host.run("my command")
+        host.run("my command", terminal='powershell)
+        host.run("my command", terminal='/bin/bash)
+        '''
         cmd = self.get_command(command, *args)
-        if self.user is not None:
-            out = self.run_local(
-                "docker exec -u %s %s /bin/sh -c %s",
-                self.user, self.name, cmd)
-        else:
-            out = self.run_local(
-                "docker exec %s /bin/sh -c %s", self.name, cmd)
+
+        # get the terminal specification - default: "/bin/sh"
+        terminal_key = "terminal"
+        terminal = (
+            "/bin/sh" if terminal_key not in kwargs
+            else kwargs[terminal_key])
+        # get the docker command
+        docker_command, args = self.__docker_command(terminal, cmd)
+
+        # run the built docker command
+        out = self.run_local(docker_command, *args)
         out.command = self.encode(cmd)
         return out
+
+    def __docker_command(self, terminal, command):
+        '''
+        Builds the command to be run by the specified terminal.
+        This method does not execute the command
+
+        terminal (str): The terminal to run the command in
+        command (str): The command to execute
+
+        Usage:
+            __docker_command('/bin/sh', cmd) will return the docker
+            command with placeholders and the corresponding args.
+        '''
+        command_items = []
+        args = []
+        if self.user is None:
+            command_items = [
+                "docker exec",
+                "%s",
+                terminal, "-c",
+                "%s"]
+            args = [self.name, command]
+        else:
+            command_items = [
+                "docker exec",
+                "-u", "%s", "%s",
+                terminal, "-c",
+                "%s"]
+            args = [self.user, self.name, command]
+
+        # join the command into one string
+        docker_command = " ".join(command_items)
+        return (docker_command, args)
