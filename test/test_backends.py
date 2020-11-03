@@ -419,6 +419,12 @@ def test_docker_encoding(host):
     assert host.file("/tmp/s.txt").content_string.strip() == string
 
 
+@pytest.mark.testinfra_hosts("docker://debian_buster")
+def test_docker_bash_command(host):
+    command = 'declare -r STR="test"'
+    host.run_expect([0], command, console='/bin/bash')
+
+
 @pytest.mark.parametrize('hostspec,expected', [
     ('u:P@h:p', HostSpec('h', 'p', 'u', 'P')),
     ('u@h:p', HostSpec('h', 'p', 'u', None)),
