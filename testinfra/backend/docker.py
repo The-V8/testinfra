@@ -10,6 +10,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pipes
+
 from testinfra.backend import base
 
 
@@ -25,13 +27,15 @@ class DockerBackend(base.BaseBackend):
         Builds the command for docker to execution
         '''
         cmd = self.get_command(command, *args)
+        cmd = pipes.quote(cmd)
 
         # Need to set console here since we re not dealing with the
         # super class run() signature
         console = "/bin/sh" if 'console' not in kwargs else kwargs['console']
+        console = pipes.quote(console)
 
-        docker_command, args = self.__docker_command(console, cmd)
-        out = self.run_local(docker_command, *args)
+        docker_command = self.__docker_command(console, cmd)
+        out = self.run_local(docker_command)
 
         out.command = self.encode(cmd)
         return out
@@ -41,14 +45,11 @@ class DockerBackend(base.BaseBackend):
         Builds the command to be run by the specified console.
         This method does not execute the command.
         '''
-        command_items = ["docker exec"]
-        args = [self.name, command]
-        user_flag = "-u %s"
+        docker_command = "docker exec "
 
         if self.user is not None:
-            command_items.append(user_flag)
-            args.insert(0, self.user)
+            docker_command += f"-u {pipes.quote(self.user)} "
 
-        command_items.extend(["%s", console, "-c", "%s"])
-        docker_command = " ".join(command_items)
-        return (docker_command, args)
+        docker_command += f"{self.name} {console} -c {command}"
+
+        return docker_command
