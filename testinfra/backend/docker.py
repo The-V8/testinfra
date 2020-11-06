@@ -23,9 +23,7 @@ class DockerBackend(base.BaseBackend):
         super().__init__(self.name, *args, **kwargs)
 
     def run(self, command, *args, **kwargs):
-        '''
-        Builds the command for docker to execution
-        '''
+        '''Builds the command for docker to execution'''
         cmd = self.get_command(command, *args)
         cmd = pipes.quote(cmd)
 
@@ -41,10 +39,7 @@ class DockerBackend(base.BaseBackend):
         return out
 
     def __docker_command(self, console, command):
-        '''
-        Builds the command to be run by the specified console.
-        This method does not execute the command.
-        '''
+        '''Builds the command to be run by the specified console.'''
         docker_command = "docker exec "
 
         if self.user is not None:

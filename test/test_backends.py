@@ -80,11 +80,11 @@ def test_command(host):
 def test_encoding(host):
     # buster image is en_US@ISO-8859-15
     cmd = host.run("ls -l %s", "/é")
+    print(cmd.stderr_bytes)
     if host.backend.get_connection_type() == "docker":
         # docker bug ?
         assert cmd.stderr_bytes == (
-            b"ls: impossible d'acc\xe9der \xe0 '/\xef\xbf\xbd': "
-            b"Aucun fichier ou dossier de ce type\n"
+            b"ls: cannot access '/\xef\xbf\xbd': No such file or directory\n"
         )
     elif (
         host.backend.get_connection_type() == "ansible"
@@ -93,16 +93,14 @@ def test_encoding(host):
         # XXX: this encoding issue comes directly from ansible
         # not sure how to handle this...
         assert cmd.stderr == (
-            "ls: impossible d'accéder à '/Ã©': "
-            "Aucun fichier ou dossier de ce type")
+            b"ls: cannot access '/Ã©': No such file or directory\n"
+        )
     else:
         assert cmd.stderr_bytes == (
-            b"ls: impossible d'acc\xe9der \xe0 '/\xe9': "
-            b"Aucun fichier ou dossier de ce type\n"
+            "ls: cannot access '/\xe9': No such file or directory\n"
         )
         assert cmd.stderr == (
-            "ls: impossible d'accéder à '/é': "
-            "Aucun fichier ou dossier de ce type\n"
+            "ls: cannot access '/é': No such file or directory\n"
         )
 
 
@@ -380,7 +378,7 @@ def test_ansible_config():
             },
             "--extra-vars %s",
             ['{"target": "production", "foo": 42}'],
-         ),
+        ),
         ({"verbose": 0, "check": False}, "", []),
         ({"verbose": 1, "check": False}, "-v", []),
         ({"verbose": 2, "check": False}, "-vv", []),
