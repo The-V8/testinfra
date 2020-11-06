@@ -80,7 +80,6 @@ def test_command(host):
 def test_encoding(host):
     # buster image is en_US@ISO-8859-15
     cmd = host.run("ls -l %s", "/é")
-    print(cmd.stderr_bytes)
     if host.backend.get_connection_type() == "docker":
         # docker bug ?
         assert cmd.stderr_bytes == (
@@ -92,12 +91,13 @@ def test_encoding(host):
     ):
         # XXX: this encoding issue comes directly from ansible
         # not sure how to handle this...
+        print(cmd.stderr)
         assert cmd.stderr == (
-            b"ls: cannot access '/Ã©': No such file or directory\n"
+            "ls: cannot access '/é': No such file or directory"
         )
     else:
         assert cmd.stderr_bytes == (
-            "ls: cannot access '/\xe9': No such file or directory\n"
+            b"ls: cannot access '/\xe9': No such file or directory\n"
         )
         assert cmd.stderr == (
             "ls: cannot access '/é': No such file or directory\n"
