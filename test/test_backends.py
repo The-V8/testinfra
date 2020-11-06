@@ -93,7 +93,7 @@ def test_encoding(host):
         # XXX: this encoding issue comes directly from ansible
         # not sure how to handle this...
         assert cmd.stderr == (
-            b"ls: cannot access '/Ã©': No such file or directory\n"
+            "ls: cannot access '/Ã©': No such file or directory\n"
         )
     else:
         assert cmd.stderr_bytes == (
