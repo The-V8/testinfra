@@ -34,9 +34,9 @@ RUN mkdir -p /var/run/sshd && \
     systemctl enable netfilter-persistent.service && \
     ln -fsn /bin/false /usr/sbin/ntpd && \
     echo "python hold" | dpkg --set-selections && \
-    echo "LANG=fr_FR.ISO-8859-15" > /etc/default/locale && \
-    echo "LANGUAGE=fr_FR" >> /etc/default/locale && \
-    echo "fr_FR.ISO-8859-15 ISO-8859-15" >> /etc/locale.gen && \
+    echo "LANG=en_US.ISO-8859-15" > /etc/default/locale && \
+    echo "LANGUAGE=en_US" >> /etc/default/locale && \
+    echo "en_US.ISO-8859-15 ISO-8859-15" >> /etc/locale.gen && \
     locale-gen && \
     update-locale && \
     useradd -m user -c "gecos.comment" && \
@@ -56,7 +56,7 @@ RUN echo "root:foo" | chpasswd
 RUN sed -ri 's/^UsePAM yes$/UsePAM no/' /etc/ssh/sshd_config
 RUN sed -ri 's/AcceptEnv LANG LC_*/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_config
 RUN echo "PermitUserEnvironment yes" >> /etc/ssh/sshd_config
-RUN echo "LANG=fr_FR.ISO-8859-15" >> /root/.ssh/environment
+RUN echo "LANG=en_US.ISO-8859-15" >> /root/.ssh/environment
 RUN echo "user:foo" | chpasswd
 
 # Iptables rules
@@ -68,8 +68,8 @@ RUN chage -E 20000 user
 # Some python virtualenv
 RUN python -m virtualenv /v && /v/bin/pip install 'pytest>2,<3'
 
-ENV LANG fr_FR.ISO-8859-15
-ENV LANGUAGE fr_FR
+ENV LANG en_US.ISO-8859-15
+ENV LANGUAGE en_US
 
 EXPOSE 22
 CMD ["/sbin/init"]

@@ -367,9 +367,8 @@ def test_ansible_module(host):
         host.ansible("command", "zzz", check=False)
     except host.ansible.AnsibleException as exc:
         assert exc.result['rc'] == 2
-        # notez que the debian buster container is set to LANG=fr_FR
-        assert exc.result['msg'] == ('[Errno 2] Aucun fichier ou dossier '
-                                     'de ce type')
+        # the debian buster container is set to LANG=en_US
+        assert exc.result['msg'] == ('[Errno 2] No files or folders of type')
 
     result = host.ansible("command", "echo foo", check=False)
     assert result['stdout'] == 'foo'

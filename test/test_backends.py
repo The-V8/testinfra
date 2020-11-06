@@ -78,7 +78,7 @@ def test_command(host):
 
 @pytest.mark.testinfra_hosts(*HOSTS)
 def test_encoding(host):
-    # buster image is fr_FR@ISO-8859-15
+    # buster image is en_US@ISO-8859-15
     cmd = host.run("ls -l %s", "/é")
     if host.backend.get_connection_type() == "docker":
         # docker bug ?
@@ -419,12 +419,6 @@ def test_docker_encoding(host):
     assert host.file("/tmp/s.txt").content_string.strip() == string
 
 
-@pytest.mark.testinfra_hosts("docker://debian_buster")
-def test_docker_bash_command(host):
-    command = 'declare -r STR="test"'
-    host.run_expect([0], command, console='/bin/bash')
-
-
 @pytest.mark.parametrize('hostspec,expected', [
     ('u:P@h:p', HostSpec('h', 'p', 'u', 'P')),
     ('u@h:p', HostSpec('h', 'p', 'u', None)),
@@ -525,3 +519,9 @@ def test_ssh_hostspec(hostspec, expected):
     cmd, cmd_args = backend._build_ssh_command('true')
     command = backend.quote(' '.join(cmd), *cmd_args)
     assert command == expected
+
+
+@pytest.mark.testinfra_hosts("docker://debian_buster")
+def test_docker_bash_command(host):
+    command = 'declare -r STR="test"'
+    host.run_expect([0], command, console='/bin/bash')
