@@ -13,6 +13,8 @@
 import collections
 import locale
 import logging
+from os import system
+import platform
 import shlex
 import subprocess
 import urllib.parse
@@ -188,7 +190,8 @@ class BaseBackend:
 
     def run_local(self, command, *args):
         command = self.quote(command, *args)
-        command = self.encode(command)
+        if (platform.system == 'Linux'):
+            command = self.encode(command)
         p = subprocess.Popen(
             command, shell=True,
             stdin=subprocess.PIPE,
