@@ -3,7 +3,8 @@ pytest-cov
 pytest-xdist
 paramiko
 tornado<5
-salt
 pywinrm
+bcrypt
 ..\\..\\..\\..\\..\\Downloads\\pycurl-7.43.0.5-cp39-cp39-win_amd64.whl
-# ansible>=2.8,<3; sys.platform == 'linux'
+salt; sys_platform == 'linux'
+ansible>=2.8,<3; sys_platform == 'linux'
