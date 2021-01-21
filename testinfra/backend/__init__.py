@@ -12,6 +12,7 @@
 
 import importlib
 import os
+import platform
 import urllib.parse
 
 
@@ -20,7 +21,6 @@ BACKENDS = {
     'ssh': 'testinfra.backend.ssh.SshBackend',
     'safe-ssh': 'testinfra.backend.ssh.SafeSshBackend',
     'paramiko': 'testinfra.backend.paramiko.ParamikoBackend',
-    'salt': 'testinfra.backend.salt.SaltBackend',
     'docker': 'testinfra.backend.docker.DockerBackend',
     'podman': 'testinfra.backend.podman.PodmanBackend',
     'ansible': 'testinfra.backend.ansible.AnsibleBackend',
@@ -29,6 +29,9 @@ BACKENDS = {
     'lxc': 'testinfra.backend.lxc.LxcBackend',
     'openshift': 'testinfra.backend.openshift.OpenShiftBackend',
 }
+
+if platform.system() != "Windows":
+    BACKENDS['salt'] = 'testinfra.backend.salt.SaltBackend'
 
 
 def get_backend_class(connection):
