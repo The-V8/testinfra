@@ -23,7 +23,6 @@ BACKENDS = {
     'paramiko': 'testinfra.backend.paramiko.ParamikoBackend',
     'docker': 'testinfra.backend.docker.DockerBackend',
     'podman': 'testinfra.backend.podman.PodmanBackend',
-    'ansible': 'testinfra.backend.ansible.AnsibleBackend',
     'kubectl': 'testinfra.backend.kubectl.KubectlBackend',
     'winrm': 'testinfra.backend.winrm.WinRMBackend',
     'lxc': 'testinfra.backend.lxc.LxcBackend',
@@ -32,6 +31,7 @@ BACKENDS = {
 
 if platform.system() != "Windows":
     BACKENDS['salt'] = 'testinfra.backend.salt.SaltBackend'
+    BACKENDS['ansible'] = 'testinfra.backend.ansible.AnsibleBackend'
 
 
 def get_backend_class(connection):
