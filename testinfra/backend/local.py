@@ -15,6 +15,7 @@ import platform
 
 from testinfra.backend import base
 
+
 class LocalBackend(base.BaseBackend):
     NAME = "local"
 
@@ -33,6 +34,7 @@ class LocalBackend(base.BaseBackend):
             command = self.get_command(command, *args)
             encoded_bytes = base64.b64encode(command.encode("utf-16-le"))
             encoded_str = str(encoded_bytes, "utf-8")
-            command = f"powershell -ExecutionPolicy Unrestricted -EncodedCommand {encoded_str}"
+            command = ("powershell -ExecutionPolicy Unrestricted"
+                       f" -EncodedCommand {encoded_str}")
             return self.run_local(command)
         return self.run_local(self.get_command(command, *args))

@@ -13,7 +13,6 @@
 import collections
 import locale
 import logging
-from os import system
 import platform
 import shlex
 import subprocess

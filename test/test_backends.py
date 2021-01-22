@@ -106,6 +106,7 @@ def test_encoding(host):
             "Aucun fichier ou dossier de ce type\n"
         )
 
+
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.testinfra_hosts(
@@ -129,6 +130,7 @@ def test_user_connection(host):
 @pytest.mark.testinfra_hosts(*SUDO_HOSTS)
 def test_sudo(host):
     assert host.user().name == "root"
+
 
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
@@ -160,6 +162,7 @@ def test_ansible_get_hosts():
         assert get_hosts('ungrouped') == ["ungrp"]
         assert get_hosts('un*') == ["ungrp"]
         assert get_hosts('nope') == []
+
 
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
@@ -199,6 +202,7 @@ def test_ansible_get_variables():
             'group_names': ['ungrouped'],
             'groups': groups,
         }
+
 
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
@@ -275,6 +279,7 @@ def test_ansible_get_host(kwargs, inventory, expected):
         for attr, value in expected.items():
             assert operator.attrgetter(attr)(backend) == value
 
+
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.parametrize('inventory,expected', [
@@ -314,6 +319,7 @@ def test_ansible_ssh_command(inventory, expected):
         command = backend.quote(' '.join(cmd), *cmd_args)
         assert command == expected
 
+
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_no_host():
@@ -338,6 +344,7 @@ def test_ansible_no_host():
         assert str(exc.value) == nohost
         assert AnsibleRunner(f.name).get_hosts('localhost') == ['localhost']
 
+
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_config():
@@ -360,6 +367,7 @@ def test_ansible_config():
                 os.environ['ANSIBLE_CONFIG'] = old
             else:
                 del os.environ['ANSIBLE_CONFIG']
+
 
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')
@@ -402,6 +410,7 @@ def test_ansible_options(options, expected_cli, expected_args):
     cli, args = runner.options_to_cli(options)
     assert cli == expected_cli
     assert args == expected_args
+
 
 @pytest.mark.skipif(
     platform.system() == 'Windows', reason='Not compatible with windows')

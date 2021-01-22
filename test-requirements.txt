@@ -5,5 +5,5 @@ paramiko
 tornado<5
 pywinrm
 bcrypt
-salt; sys_platform == 'linux'
-ansible>=2.8,<3; sys_platform == 'linux'
+salt; platform_system != 'Windows'
+ansible>=2.8,<3; platform_system != 'Windows'
