@@ -14,7 +14,6 @@ import bcrypt
 import datetime
 import re
 import time
-
 import pytest
 
 from ipaddress import ip_address
@@ -268,8 +267,9 @@ def test_nonexistent_user(host):
 
 def test_current_user(host):
     assert host.user().name == "root"
-    pw = host.user().password
-    assert bcrypt.checkpw("foo", pw) == pw
+    pw = str(host.user().password).encode('utf8')
+    pw_hash = bcrypt.hashpw(pw, bcrypt.gensalt())
+    assert bcrypt.checkpw(pw, pw_hash)
 
 
 def test_group(host):
