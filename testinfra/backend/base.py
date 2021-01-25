@@ -189,7 +189,7 @@ class BaseBackend:
 
     def run_local(self, command, *args):
         command = self.quote(command, *args)
-        if (platform.system() == 'Linux'):
+        if (platform.system() in ['Darwin', 'Linux']):
             command = self.encode(command)
         p = subprocess.Popen(
             command, shell=True,
