@@ -167,9 +167,12 @@ class BaseBackend:
         return [host]
 
     @staticmethod
-    def quote(command, *args):
+    def quote(command, *args, **kwargs):
         if args:
-            return command % tuple(shlex.quote(a) for a in args)
+            if "dont_quote" in kwargs and platform.system() == "Windows":
+                return command % tuple(f'"{a}"' for a in args)
+            else:
+                return command % tuple(shlex.quote(a) for a in args)
         return command
 
     def get_sudo_command(self, command, sudo_user):
@@ -187,8 +190,8 @@ class BaseBackend:
     def run(self, command, *args, **kwargs):
         raise NotImplementedError
 
-    def run_local(self, command, *args):
-        command = self.quote(command, *args)
+    def run_local(self, command, *args, **kwargs):
+        command = self.quote(command, *args, **kwargs)
         if (platform.system() in ['Darwin', 'Linux']):
             command = self.encode(command)
         p = subprocess.Popen(

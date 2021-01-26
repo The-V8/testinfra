@@ -25,9 +25,11 @@ class DockerBackend(base.BaseBackend):
         if self.user is not None:
             out = self.run_local(
                 "docker exec -u %s %s /bin/sh -c %s",
-                self.user, self.name, cmd)
+                self.user, self.name, cmd,
+                dont_quote=True)
         else:
             out = self.run_local(
-                "docker exec %s /bin/sh -c %s", self.name, cmd)
+                "docker exec %s /bin/sh -c %s", self.name, cmd,
+                dont_quote=True)
         out.command = self.encode(cmd)
         return out
