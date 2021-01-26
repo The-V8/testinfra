@@ -15,6 +15,7 @@ import datetime
 import re
 import time
 import pytest
+import platform
 
 from ipaddress import ip_address
 from ipaddress import IPv4Address
@@ -326,6 +327,8 @@ def test_file(host):
     assert host.file("/d/p").is_pipe
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_unavailable(host):
     expected = ('Ansible module is only available with '
                 'ansible connection backend')
@@ -337,6 +340,8 @@ def test_ansible_unavailable(host):
     assert expected in str(excinfo.value)
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.testinfra_hosts("ansible://debian_buster")
 def test_ansible_module(host):
     setup = host.ansible("setup")["ansible_facts"]
@@ -381,6 +386,8 @@ def test_ansible_module(host):
     assert result['stdout'] == 'foo'
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.testinfra_hosts("ansible://debian_buster",
                              "ansible://user@debian_buster")
 def test_ansible_module_become(host):
@@ -398,6 +405,8 @@ def test_ansible_module_become(host):
                             check=False, become=True)['stdout'] == 'root'
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.testinfra_hosts("ansible://debian_buster")
 def test_ansible_module_options(host):
     assert host.ansible(

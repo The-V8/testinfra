@@ -22,37 +22,38 @@ from testinfra.backend.base import BaseBackend
 from testinfra.backend.base import HostSpec
 from testinfra.backend.winrm import _quote
 from testinfra.utils.ansible_runner import AnsibleRunner
+
 HOSTS = [
-    "ssh://debian_buster",
-    "safe-ssh://debian_buster",
+    # "ssh://debian_buster",
+    # "safe-ssh://debian_buster",
     "docker://debian_buster",
-    "paramiko://debian_buster",
-    "ansible://debian_buster",
-    "ansible://debian_buster?force_ansible=True",
+    # "paramiko://debian_buster",
+    # "ansible://debian_buster",
+    # "ansible://debian_buster?force_ansible=True",
 ]
 USER_HOSTS = [
-    "ssh://user@debian_buster",
-    "safe-ssh://user@debian_buster",
+    # "ssh://user@debian_buster",
+    # "safe-ssh://user@debian_buster",
     "docker://user@debian_buster",
-    "paramiko://user@debian_buster",
-    "ansible://user@debian_buster",
-    "ansible://user@debian_buster?force_ansible=True",
+    # "paramiko://user@debian_buster",
+    # "ansible://user@debian_buster",
+    # "ansible://user@debian_buster?force_ansible=True",
 ]
 SUDO_HOSTS = [
-    "ssh://user@debian_buster?sudo=True",
-    "safe-ssh://user@debian_buster?sudo=True",
+    # "ssh://user@debian_buster?sudo=True",
+    # "safe-ssh://user@debian_buster?sudo=True",
     "docker://user@debian_buster?sudo=True",
-    "paramiko://user@debian_buster?sudo=True",
-    "ansible://user@debian_buster?sudo=True",
-    "ansible://user@debian_buster?force_ansible=True&sudo=True",
+    # "paramiko://user@debian_buster?sudo=True",
+    # "ansible://user@debian_buster?sudo=True",
+    # "ansible://user@debian_buster?force_ansible=True&sudo=True",
 ]
 SUDO_USER_HOSTS = [
-    "ssh://debian_buster?sudo=True&sudo_user=user",
-    "safe-ssh://debian_buster?sudo=True&sudo_user=user",
+    # "ssh://debian_buster?sudo=True&sudo_user=user",
+    # "safe-ssh://debian_buster?sudo=True&sudo_user=user",
     "docker://debian_buster?sudo=True&sudo_user=user",
-    "paramiko://debian_buster?sudo=True&sudo_user=user",
-    "ansible://debian_buster?sudo=True&sudo_user=user",
-    "ansible://debian_buster?force_ansible=True&sudo=True&sudo_user=user",
+    # "paramiko://debian_buster?sudo=True&sudo_user=user",
+    # "ansible://debian_buster?sudo=True&sudo_user=user",
+    # "ansible://debian_buster?force_ansible=True&sudo=True&sudo_user=user",
 ]
 
 
