@@ -24,6 +24,7 @@ class Host:
     def __init__(self, backend):
         self.backend = backend
         self.os = platform.system()
+        self.wsl_distro_name = os.getenv("WSL_DISTRO_NAME")
         super().__init__()
 
     def __repr__(self):
@@ -155,6 +156,10 @@ class Host:
                 backend.set_host(host)
                 cache[key].append(host)
         return cache[key]
+
+    @property
+    def runs_on_wsl(self):
+        return self.wsl_distro_name is not None
 
 
 get_host = Host.get_host
