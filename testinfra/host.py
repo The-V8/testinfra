@@ -11,7 +11,7 @@
 # limitations under the License.
 
 import os
-
+import platform
 import testinfra.backend
 import testinfra.modules
 
@@ -29,7 +29,11 @@ class Host:
 
     def exists(self, command):
         """Return True if given command exist in $PATH"""
-        return self.run_expect([0, 1, 127], "command -v %s", command).rc == 0
+        if (platform.system() == 'Windows'):
+            runner = "Get-Command %s"
+        else:
+            runner = "command -v %s"
+        return self.run_expect([0, 1, 127], runner, command).rc == 0
 
     def find_command(self, command, extrapaths=('/sbin', '/usr/sbin')):
         """Return path of given command

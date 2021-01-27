@@ -12,6 +12,7 @@
 
 import operator
 import os
+import platform
 import pytest
 import tempfile
 
@@ -106,6 +107,8 @@ def test_encoding(host):
         )
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.testinfra_hosts(
     "ansible://debian_buster?force_ansible=True")
 def test_ansible_any_error_fatal(host):
@@ -129,6 +132,8 @@ def test_sudo(host):
     assert host.user().name == "root"
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_get_hosts():
     with tempfile.NamedTemporaryFile() as f:
         f.write((
@@ -159,6 +164,8 @@ def test_ansible_get_hosts():
         assert get_hosts('nope') == []
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_get_variables():
     with tempfile.NamedTemporaryFile() as f:
         f.write((
@@ -197,6 +204,8 @@ def test_ansible_get_variables():
         }
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.parametrize('kwargs,inventory,expected', [
     ({}, b'host ansible_connection=local ansible_become=yes ansible_become_user=u', {  # noqa
         'NAME': 'local',
@@ -271,6 +280,8 @@ def test_ansible_get_host(kwargs, inventory, expected):
             assert operator.attrgetter(attr)(backend) == value
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.parametrize('inventory,expected', [
     (b'host', (
         'ssh -o ConnectTimeout=10 -o ControlMaster=auto '
@@ -309,6 +320,8 @@ def test_ansible_ssh_command(inventory, expected):
         assert command == expected
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_no_host():
     with tempfile.NamedTemporaryFile() as f:
         f.write(b'host\n')
@@ -332,6 +345,8 @@ def test_ansible_no_host():
         assert AnsibleRunner(f.name).get_hosts('localhost') == ['localhost']
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_config():
     # test testinfra use ANSIBLE_CONFIG
     tmp = tempfile.NamedTemporaryFile
@@ -354,6 +369,8 @@ def test_ansible_config():
                 del os.environ['ANSIBLE_CONFIG']
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 @pytest.mark.parametrize(
     'options,expected_cli,expected_args',
     [
@@ -380,7 +397,7 @@ def test_ansible_config():
             },
             "--extra-vars %s",
             ['{"target": "production", "foo": 42}'],
-         ),
+        ),
         ({"verbose": 0, "check": False}, "", []),
         ({"verbose": 1, "check": False}, "-v", []),
         ({"verbose": 2, "check": False}, "-vv", []),
@@ -395,6 +412,8 @@ def test_ansible_options(options, expected_cli, expected_args):
     assert args == expected_args
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows', reason='Not compatible with windows')
 def test_ansible_unknown_option():
     runner = AnsibleRunner()
     with pytest.raises(KeyError, match="^'unknown'$"):
