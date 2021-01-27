@@ -28,9 +28,9 @@ class LocalBackend(base.BaseBackend):
 
     def run(self, command, *args):
         quoted_command = self.quote(command, *args)
-        
+
         joint_command = "{runtime} -c \"{cmd}\"".format(
-            runtime=self.runtime, 
+            runtime=self.runtime,
             cmd=quoted_command)
 
         p, stdout, stderr = self.execute_cmd(joint_command)

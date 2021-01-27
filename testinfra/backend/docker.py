@@ -21,13 +21,33 @@ class DockerBackend(base.BaseBackend):
         super().__init__(self.name, *args, **kwargs)
 
     def run(self, command, *args, **kwargs):
-        cmd = self.get_command(command, *args)
+        print(command, *args)
+
+        cmd = command = self.quote(command, *args)
+        if self.sudo:
+            if self.sudo_user is None:
+                command = "sudo /bin/sh -c \"{}\"".format(
+                    command)
+            else:
+                command = "sudo -u {} /bin/sh -c \"{}\"".format(
+                    self.sudo_user, command)
+        print(cmd)
+
         if self.user is not None:
-            out = self.run_local(
-                "docker exec -u %s %s /bin/sh -c %s",
-                self.user, self.name, cmd)
+            container_args = "-u {} {}".format(self.user, self.name)
         else:
-            out = self.run_local(
-                "docker exec %s /bin/sh -c %s", self.name, cmd)
+            container_args = self.name
+
+        joint_command = "docker exec {container_args} {runtime} -c \"{cmd}\""
+        joint_command = joint_command.format(
+            container_args=container_args,
+            runtime=self.runtime,
+            cmd=cmd
+        )
+        print(joint_command)
+
+        p, stdout, stderr = self.execute_cmd(joint_command)
+
+        out = self.result(p.returncode, command, stdout, stderr)
         out.command = self.encode(cmd)
         return out

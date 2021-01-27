@@ -115,9 +115,8 @@ class BaseBackend:
         self.sudo = sudo
         self.sudo_user = sudo_user
         self.runtime = self.__init_runtime()
- 
-        super().__init__()
 
+        super().__init__()
 
     def __init_runtime(self):
         if self.is_windows():
@@ -130,10 +129,10 @@ class BaseBackend:
 
     @staticmethod
     def is_windows():
-        if platform.system() == 'Windows': 
+        if platform.system() == 'Windows':
             return True
         return False
-        
+
     def set_host(self, host):
         self._host = host
 
