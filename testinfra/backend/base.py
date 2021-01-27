@@ -13,6 +13,7 @@
 import collections
 import locale
 import logging
+import platform
 import shlex
 import subprocess
 import urllib.parse
@@ -113,8 +114,26 @@ class BaseBackend:
         self.hostname = hostname
         self.sudo = sudo
         self.sudo_user = sudo_user
+        self.runtime = self.__init_runtime()
+ 
         super().__init__()
 
+
+    def __init_runtime(self):
+        if self.is_windows():
+            return 'powershell'
+        else:
+            return r'/bin/sh'
+
+    def set_runtime(self, runtime):
+        self.runtime = runtime
+
+    @staticmethod
+    def is_windows():
+        if platform.system() == 'Windows': 
+            return True
+        return False
+        
     def set_host(self, host):
         self._host = host
 
@@ -198,6 +217,16 @@ class BaseBackend:
         stdout, stderr = p.communicate()
         result = self.result(p.returncode, command, stdout, stderr)
         return result
+
+    def execute_cmd(self, command):
+        p = subprocess.Popen(
+            command, shell=True,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        stdout, stderr = p.communicate()
+        return p, stdout, stderr
 
     @staticmethod
     def parse_hostspec(hostspec):
