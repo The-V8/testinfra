@@ -38,13 +38,12 @@ class AnsibleBackend(base.BaseBackend):
         return AnsibleRunner.get_runner(self.ansible_inventory)
 
     def run(self, command, *args, **kwargs):
-        command = self.get_command(command, *args)
         if not self.force_ansible:
             host = self.ansible_runner.get_host(
                 self.host, ssh_config=self.ssh_config,
                 ssh_identity_file=self.ssh_identity_file)
             if host is not None:
-                return host.run(command)
+                return host.run(command, *args)
         out = self.run_ansible('shell', module_args=command, check=False)
         return self.result(
             out['rc'], command, stdout_bytes=None,
