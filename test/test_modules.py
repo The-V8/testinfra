@@ -503,7 +503,7 @@ def test_sudo_to_root(host):
         assert host.user().name == "root"
         # Test nested sudo
         with host.sudo("www-data"):
-            assert host.user().name == "www-data"
+            assert "www-data" in host.user().name
     assert host.user().name == "user"
 
 

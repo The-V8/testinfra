@@ -18,3 +18,9 @@ flake8.report
 junit*.xml
 doc/build
 .cache
+
+# editor specific ignores
+.vscode
+
+# env specific ignores
+.venv*

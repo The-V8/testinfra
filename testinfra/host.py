@@ -32,7 +32,7 @@ class Host:
 
     def exists(self, command):
         """Return True if given command exist in $PATH"""
-        if self.os == 'Windows':
+        if self.os == 'Windows' and self.backend.get_hostname() != 'alpine':
             runner = "Get-Command %s"
         else:
             runner = "command -v %s"
